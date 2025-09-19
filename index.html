@@ -12,28 +12,10 @@
       font-size: 2em;
       margin-bottom: 20px;
     }
-    #chat {
-      border: 1px solid #ccc;
-      height: 300px;
-      overflow-y: scroll;
-      padding: 10px;
-      margin-bottom: 10px;
-    }
-    #messageInput {
-      width: calc(100% - 110px);
-    }
-    #sendBtn {
-      width: 100px;
-    }
   </style>
 </head>
 <body>
   <div id="clock">--:--:--</div>
-  
-  <div id="chat"></div>
-  
-  <input type="text" id="messageInput" placeholder="Type your message..." />
-  <button id="sendBtn">Send</button>
 
   <script>
     // Clock
@@ -46,30 +28,21 @@
     }
     setInterval(updateClock, 1000);
     updateClock();
-
-    // Chat - simplistic (for demonstration)
-    const chatDiv = document.getElementById('chat');
-    const input = document.getElementById('messageInput');
-    const sendBtn = document.getElementById('sendBtn');
-
-    // This is just local echo; real-chat needs server + WebSocket
-    sendBtn.addEventListener('click', () => {
-      const msg = input.value.trim();
-      if (msg === '') return;
-      const p = document.createElement('p');
-      p.textContent = "You: " + msg;
-      chatDiv.appendChild(p);
-      input.value = '';
-      // scroll to bottom
-      chatDiv.scrollTop = chatDiv.scrollHeight;
-      // Here you would send msg to server, receive others’ messages, etc.
-    });
-
-    input.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        sendBtn.click();
-      }
-    });
   </script>
+
+  <!--Start of Tawk.to Script-->
+  <script type="text/javascript">
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+  (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/68cd7587531e421921d0985a/1j5h966c8';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+  })();
+  </script>
+  <!--End of Tawk.to Script-->
+
 </body>
 </html>
