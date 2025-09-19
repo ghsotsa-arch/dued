@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>All-in-One Chat & Screen Share with Login</title>
+  <title>All-in-One Chat & AI</title>
   <style>
     body {
       font-family: sans-serif;
@@ -53,14 +53,12 @@
     <button id="emailLogin">Login with Email</button>
     <button id="anonLogin">Login Anonymously</button>
   </div>
-
   <div id="userStatus"></div>
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script>
-    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyA2NDDSOzIuUhWioTEfufSVowPTNcVM_Sg",
       authDomain: "dude-ba0b2.firebaseapp.com",
@@ -69,14 +67,10 @@
       messagingSenderId: "87241477123",
       appId: "1:87241477123:web:REPLACE_WITH_YOUR_APP_ID"
     };
-
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-
     const userStatus = document.getElementById("userStatus");
 
-    // Google Login
     document.getElementById("googleLogin").onclick = () => {
       const provider = new firebase.auth.GoogleAuthProvider();
       auth.signInWithPopup(provider)
@@ -84,7 +78,6 @@
         .catch(error => alert(error.message));
     };
 
-    // Email/Password Login (prompt)
     document.getElementById("emailLogin").onclick = async () => {
       const email = prompt("Enter email:");
       const password = prompt("Enter password:");
@@ -101,20 +94,15 @@
       }
     };
 
-    // Anonymous login
     document.getElementById("anonLogin").onclick = () => {
       auth.signInAnonymously()
         .then(() => { userStatus.innerText = "Logged in anonymously"; })
         .catch(err => alert(err.message));
     };
 
-    // Monitor auth state
     auth.onAuthStateChanged(user => {
-      if(user) {
-        console.log("User signed in:", user);
-      } else {
-        console.log("No user signed in");
-      }
+      if(user) console.log("User signed in:", user);
+      else console.log("No user signed in");
     });
   </script>
 
@@ -132,16 +120,23 @@
 
   <!-- Tawk.to -->
   <script type="text/javascript">
-  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-  (function(){
-    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-    s1.async=true;
-    s1.src='https://embed.tawk.to/68cd7587531e421921d0985a/1j5h966c8';
-    s1.charset='UTF-8';
-    s1.setAttribute('crossorigin','*');
-    s0.parentNode.insertBefore(s1,s0);
-  })();
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+      var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+      s1.async=true;
+      s1.src='https://embed.tawk.to/68cd7587531e421921d0985a/1j5h966c8';
+      s1.charset='UTF-8';
+      s1.setAttribute('crossorigin','*');
+      s0.parentNode.insertBefore(s1,s0);
+    })();
   </script>
+
+  <!-- Thinkstack AI Chatbot -->
+  <script
+    chatbot_id="68cd7ea860d3284cb03acd1c"
+    data-type="default"
+    src="https://app.thinkstack.ai/bot/thinkstackai-loader.min.js"
+  ></script>
 
 </body>
 </html>
