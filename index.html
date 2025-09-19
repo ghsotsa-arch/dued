@@ -132,7 +132,6 @@
   <!-- Tab content -->
   <div id="Chat" class="tabcontent" style="display:block;">
     <div id="tlkio" data-channel="hey"></div>
-    <script async src="http://tlk.io/embed.js" type="text/javascript"></script>
   </div>
 
   <div id="ScreenShare" class="tabcontent">
@@ -144,21 +143,42 @@
 
   <div id="AIChat" class="tabcontent">
     <div id="thinkstackBot"></div>
-    <script
-      chatbot_id="68cd7ea860d3284cb03acd1c"
-      data-type="default"
-      src="https://app.thinkstack.ai/bot/thinkstackai-loader.min.js"
-    ></script>
   </div>
 
   <script>
+    let tlkioLoaded = false;
+
     function openTab(evt, tabName) {
       const tabcontent = document.getElementsByClassName("tabcontent");
       for (let i=0;i<tabcontent.length;i++){ tabcontent[i].style.display="none"; }
+
       const tablinks = document.getElementsByClassName("tablinks");
       for (let i=0;i<tablinks.length;i++){ tablinks[i].className = tablinks[i].className.replace(" active",""); }
+
       document.getElementById(tabName).style.display="block";
       evt.currentTarget.className += " active";
+
+      // Initialize tlk.io chat only once
+      if(tabName === 'Chat' && !tlkioLoaded){
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'http://tlk.io/embed.js';
+        script.type = 'text/javascript';
+        document.getElementById('tlkio').appendChild(script);
+        tlkioLoaded = true;
+      }
+
+      // Initialize Thinkstack AI only once
+      if(tabName === 'AIChat'){
+        const botDiv = document.getElementById('thinkstackBot');
+        if(!botDiv.hasChildNodes()){
+          const aiScript = document.createElement('script');
+          aiScript.setAttribute('chatbot_id', '68cd7ea860d3284cb03acd1c');
+          aiScript.setAttribute('data-type', 'default');
+          aiScript.src = 'https://app.thinkstack.ai/bot/thinkstackai-loader.min.js';
+          botDiv.appendChild(aiScript);
+        }
+      }
     }
   </script>
 
