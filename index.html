@@ -48,7 +48,7 @@
       left: 0;
       visibility: visible;
     }
-    iframe, #tlkio, #thinkstackBot, #chatlingBot {
+    iframe, #tlkio, #thinkstackBot, #chtl-inline-bot {
       width: 100%;
       height: 100%;
       border-radius: 10px;
@@ -163,17 +163,12 @@
   </div>
 
   <div id="ChatlingAI" class="tabcontent">
-    <div id="chatlingBot"></div>
+    <!-- Chatling AI Inline Version -->
     <script>
-      window.chtlConfig = { chatbotId: "7527264332" };
-      const chatlingScript = document.createElement('script');
-      chatlingScript.async = true;
-      chatlingScript.setAttribute('data-id', '7527264332');
-      chatlingScript.id = 'chtl-script';
-      chatlingScript.type = 'text/javascript';
-      chatlingScript.src = 'https://chatling.ai/js/embed.js';
-      document.getElementById('chatlingBot').appendChild(chatlingScript);
+      window.chtlConfig = { chatbotId: "7527264332", display: "page_inline" };
     </script>
+    <div id="chtl-inline-bot" style="width: 100%; height: 500px;"></div>
+    <script async data-id="7527264332" data-display="page_inline" id="chtl-script" type="text/javascript" src="https://chatling.ai/js/embed.js"></script>
   </div>
 
   <script>
