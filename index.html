@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>All-in-One Chat & Screen Share</title>
+  <title>All-in-One Chat & Screen Share with Login</title>
   <style>
     body {
       font-family: sans-serif;
@@ -23,6 +23,12 @@
       border-radius: 10px;
       margin-top: 20px;
     }
+    #loginButtons button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 1em;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -30,16 +36,86 @@
   <div id="clock">--:--:--</div>
 
   <script>
-    // Clock
     function updateClock() {
       const now = new Date();
-      const hh = String(now.getHours()).padStart(2, '0');
-      const mm = String(now.getMinutes()).padStart(2, '0');
-      const ss = String(now.getSeconds()).padStart(2, '0');
+      const hh = String(now.getHours()).padStart(2,'0');
+      const mm = String(now.getMinutes()).padStart(2,'0');
+      const ss = String(now.getSeconds()).padStart(2,'0');
       document.getElementById('clock').textContent = hh + ':' + mm + ':' + ss;
     }
     setInterval(updateClock, 1000);
     updateClock();
+  </script>
+
+  <!-- Firebase Login Buttons -->
+  <div id="loginButtons">
+    <button id="googleLogin">Login with Google</button>
+    <button id="emailLogin">Login with Email</button>
+    <button id="anonLogin">Login Anonymously</button>
+  </div>
+
+  <div id="userStatus"></div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script>
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyA2NDDSOzIuUhWioTEfufSVowPTNcVM_Sg",
+      authDomain: "dude-ba0b2.firebaseapp.com",
+      projectId: "dude-ba0b2",
+      storageBucket: "dude-ba0b2.appspot.com",
+      messagingSenderId: "87241477123",
+      appId: "1:87241477123:web:REPLACE_WITH_YOUR_APP_ID"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    const userStatus = document.getElementById("userStatus");
+
+    // Google Login
+    document.getElementById("googleLogin").onclick = () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then(result => { userStatus.innerText = "Logged in as: " + result.user.displayName; })
+        .catch(error => alert(error.message));
+    };
+
+    // Email/Password Login (prompt)
+    document.getElementById("emailLogin").onclick = async () => {
+      const email = prompt("Enter email:");
+      const password = prompt("Enter password:");
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+        userStatus.innerText = "Logged in as: " + auth.currentUser.email;
+      } catch (err) {
+        if (err.code === "auth/user-not-found") {
+          await auth.createUserWithEmailAndPassword(email, password);
+          userStatus.innerText = "Account created & logged in as: " + auth.currentUser.email;
+        } else {
+          alert(err.message);
+        }
+      }
+    };
+
+    // Anonymous login
+    document.getElementById("anonLogin").onclick = () => {
+      auth.signInAnonymously()
+        .then(() => { userStatus.innerText = "Logged in anonymously"; })
+        .catch(err => alert(err.message));
+    };
+
+    // Monitor auth state
+    auth.onAuthStateChanged(user => {
+      if(user) {
+        console.log("User signed in:", user);
+      } else {
+        console.log("No user signed in");
+      }
+    });
   </script>
 
   <!-- tlk.io Chat Embed -->
@@ -54,7 +130,7 @@
     allow="camera; microphone; display-capture; fullscreen">
   </iframe>
 
-  <!--Start of Tawk.to Script-->
+  <!-- Tawk.to -->
   <script type="text/javascript">
   var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
   (function(){
@@ -66,7 +142,6 @@
     s0.parentNode.insertBefore(s1,s0);
   })();
   </script>
-  <!--End of Tawk.to Script-->
 
 </body>
 </html>
