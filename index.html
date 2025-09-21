@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>All-in-One Chat & Video Site</title>
+<title>All-in-One Chat & AI Site</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- Firebase SDK -->
@@ -71,6 +71,8 @@ body { font-family: sans-serif; margin:0; padding:10px; }
   <button class="tablinks" onclick="openTab(event,'ChatlingAI')">Chatling AI</button>
   <button class="tablinks" onclick="openTab(event,'LiveChat')">TLK.io Chat</button>
   <button class="tablinks" onclick="openTab(event,'Video')">Videos</button>
+  <button class="tablinks" onclick="openTab(event,'DeepSite')">DeepSite AI</button>
+  <button class="tablinks" onclick="openTab(event,'Search')">Search</button>
 </div>
 
 <!-- Tab Contents -->
@@ -104,6 +106,25 @@ body { font-family: sans-serif; margin:0; padding:10px; }
   <div class="responsive-container">
     <iframe src="https://streamable.com/e/YOUR_VIDEO_ID" allowfullscreen></iframe>
   </div>
+</div>
+
+<div id="DeepSite" class="tabcontent">
+  <!-- Your exact DeepSite iframe -->
+  <div class="responsive-container">
+    <iframe
+      src="https://huggingface.co/spaces/enzostvs/deepsite?embed=true"
+      width="800"
+      height="600"
+      frameborder="0"
+      allowfullscreen
+    ></iframe>
+  </div>
+</div>
+
+<div id="Search" class="tabcontent">
+  <!-- Google Custom Search Engine with embedded results -->
+  <script async src="https://cse.google.com/cse.js?cx=21c3c2466dce04cc8"></script>
+  <div class="gcse-search"></div>
 </div>
 
 <!-- Cookie Consent -->
@@ -212,3 +233,5 @@ s0.parentNode.insertBefore(s1,s0);
 
 </body>
 </html>
+
+
