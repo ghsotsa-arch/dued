@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>All-in-One Chat & AI Site</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<style>
+body { font-family: sans-serif; margin:0; padding:10px; }
+#clock { font-size:2em; text-align:center; margin-bottom:10px; }
+#loginButtons button { margin:5px; padding:10px; font-size:1em; width:100%; max-width:300px; display:block; }
+.tab { display:flex; flex-wrap:wrap; justify-content:center; margin-bottom:10px; }
+.tab button { flex:1 1 100px; margin:2px; padding:10px; cursor:pointer; font-size:14px; border:none; background-color:#eee; transition:0.3s; border-radius:5px; }
+.tab button:hover { background-color:#ddd; }
+.tab button.active { background-color:#ccc; }
+.tabcontent { display:none; width:100%; max-width:1000px; margin:auto; }
+.tabcontent.active { display:block; }
+.responsive-container { position:relative; width:100%; padding-bottom:56.25%; height:0; margin-bottom:10px; }
+.responsive-container iframe,
+.responsive-container #thinkstackBot,
+.responsive-container #chtl-inline-bot,
+.responsive-container #tlkio { position:absolute; top:0; left:0; width:100%; height:100%; border:0; }
+@media (max-width:600px) { #clock { font-size:1.5em; } .tab button { font-size:12px; padding:8px; } }
+#voiceBtn, #voiceBtnChatling { margin-top:5px; padding:8px; font-size:14px; cursor:pointer; }
+
+/* Cookie Consent Styles */
+#cookieConsent {
+  position: fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:#222;
+  color:#fff;
+  padding:15px;
+  text-align:center;
+  z-index:10000;
+  font-family:sans-serif;
+}
+#cookieConsent button {
+  margin-left:15px;
+  padding:5px 10px;
+  border:none;
+  background:#4CAF50;
+  color:white;
+  cursor:pointer;
+  border-radius:3px;
+}
+</style>
+</head>
+<body>
+
+<!-- Clock -->
+<div id="clock">--:--:--</div>
+
+<!-- Firebase Login -->
+<div id="loginButtons">
+  <button id="googleLogin">Login with Google</button>
+  <button id="emailLogin">Login with Email</button>
+  <button id="anonLogin">Login Anonymously</button>
+</div>
+<div id="userStatus">Not logged in</div>
+
+<!-- Tabs -->
+<div class="tab">
+  <button class="tablinks active" onclick="openTab(event,'VoiceChat')">Voice/Video Chat</button>
+  <button class="tablinks" onclick="openTab(event,'AIChat')">ThinkStack AI</button>
+  <button class="tablinks" onclick="openTab(event,'ChatlingAI')">Chatling AI</button>
+  <button class="tablinks" onclick="openTab(event,'LiveChat')">TLK.io Chat</button>
+  <button class="tablinks" onclick="openTab(event,'Video')">Videos</button>
+  <button class="tablinks" onclick="openTab(event,'DeepSite')">DeepSite AI</button>
+  <button class="tablinks" onclick="openTab(event,'Search')">Search</button>
+</div>
+
+<!-- Tab Contents -->
+<div id="VoiceChat" class="tabcontent active">
+  <div class="responsive-container">
+    <iframe src="https://meet.jit.si/YourRoomName"
+            allow="camera; microphone; fullscreen; autoplay"
+            allowfullscreen></iframe>
+  </div>
+</div>
+
+<div id="AIChat" class="tabcontent">
+  <button id="voiceBtn">🎤 Talk to ThinkStack AI</button>
+  <div class="responsive-container" id="thinkstackBot"></div>
+</div>
+
+<div id="ChatlingAI" class="tabcontent">
+  <button id="voiceBtnChatling">🎤 Talk to Chatling AI</button>
+  <div class="responsive-container" id="chtlContainer"></div>
+</div>
+
+<div id="LiveChat" class="tabcontent">
+  <!-- TLK.io live chat -->
+  <div class="responsive-container">
+    <div id="tlkio" data-channel="hey" style="width:100%; height:100%;"></div>
+  </div>
+  <script async src="https://tlk.io/embed.js" type="text/javascript"></script>
+</div>
+
+<div id="Video" class="tabcontent">
+  <div class="responsive-container">
+    <iframe src="https://streamable.com/e/YOUR_VIDEO_ID" allowfullscreen></iframe>
+  </div>
+</div>
+
+<div id="DeepSite" class="tabcontent">
+  <!-- Your exact DeepSite iframe -->
+  <div class="responsive-container">
+    <iframe
+      src="https://huggingface.co/spaces/enzostvs/deepsite?embed=true"
+      width="800"
+      height="600"
+      frameborder="0"
+      allowfullscreen
+    ></iframe>
+  </div>
+</div>
+
+<div id="Search" class="tabcontent">
+  <!-- Google Custom Search Engine with embedded results -->
+  <script async src="https://cse.google.com/cse.js?cx=21c3c2466dce04cc8"></script>
+  <div class="gcse-search"></div>
+</div>
+
+<!-- Cookie Consent -->
+<div id="cookieConsent">
+  This website uses cookies to improve your experience. By continuing to browse, you accept the use of cookies including: <strong>Firebase Auth, TLK.io, Tawk.to, ThinkStack AI, Chatling AI</strong>.
+  <button id="acceptCookies">Accept</button>
+</div>
+
+<script>
+// Clock
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.getHours().toString().padStart(2,'0') + ':' +
+    now.getMinutes().toString().padStart(2,'0') + ':' +
+    now.getSeconds().toString().padStart(2,'0');
+}
+setInterval(updateClock,1000); updateClock();
+
+// Tabs
+function openTab(evt, tabName) {
+  document.querySelectorAll(".tabcontent").forEach(t=>t.classList.remove("active"));
+  document.querySelectorAll(".tablinks").forEach(b=>b.classList.remove("active"));
+  document.getElementById(tabName).classList.add("active");
+  evt.currentTarget.classList.add("active");
+}
+
+// Firebase setup
+const firebaseConfig = {
+  apiKey: "AIzaSyA2NDDSOzIuUhWioTEfufSVowPTNcVM_Sg",
+  authDomain: "dude-ba0b2.firebaseapp.com",
+  projectId: "dude-ba0b2",
+  storageBucket: "dude-ba0b2.appspot.com",
+  messagingSenderId: "87241477123",
+  appId: "1:87241477123:web:REPLACE_WITH_YOUR_APP_ID"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// Login buttons
+document.getElementById('googleLogin').onclick = ()=>{ auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); };
+document.getElementById('emailLogin').onclick = ()=>{
+  const email=prompt("Email:"), pass=prompt("Password:");
+  auth.signInWithEmailAndPassword(email,pass).catch(err=>{
+    if(err.code==="auth/user-not-found"){ auth.createUserWithEmailAndPassword(email,pass); }
+  });
+};
+document.getElementById('anonLogin').onclick = ()=>{ auth.signInAnonymously(); };
+auth.onAuthStateChanged(user=>{
+  document.getElementById('userStatus').textContent = user ? `Logged in as ${user.displayName || "Anonymous"}` : "Not logged in";
+});
+
+// ThinkStack AI
+const tsScript=document.createElement('script');
+tsScript.setAttribute('chatbot_id','68cd7ea860d3284cb03acd1c');
+tsScript.setAttribute('data-type','default');
+tsScript.src='https://app.thinkstack.ai/bot/thinkstackai-loader.min.js';
+document.getElementById('thinkstackBot').appendChild(tsScript);
+
+// Chatling AI
+window.chtlConfig={chatbotId:"7527264332",display:"page_inline"};
+const clDiv=document.createElement('div'); clDiv.id="chtl-inline-bot";
+document.getElementById('chtlContainer').appendChild(clDiv);
+const clScript=document.createElement('script'); clScript.async=true;
+clScript.src="https://chatling.ai/js/embed.js";
+document.getElementById('chtlContainer').appendChild(clScript);
+
+// Voice input for ThinkStack
+const speechRec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+document.getElementById('voiceBtn').onclick = ()=>{ speechRec.start(); };
+speechRec.onresult = event=>{
+  const text = event.results[0][0].transcript;
+  alert("You said to ThinkStack AI: "+text);
+};
+
+// Voice input for Chatling
+const speechRecChatling = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+document.getElementById('voiceBtnChatling').onclick = ()=>{ speechRecChatling.start(); };
+speechRecChatling.onresult = event=>{
+  const text = event.results[0][0].transcript;
+  alert("You said to Chatling AI: "+text);
+};
+
+// Cookie consent
+if(localStorage.getItem("cookiesAccepted")) {
+  document.getElementById("cookieConsent").style.display = "none";
+}
+document.getElementById("acceptCookies").onclick = function() {
+  localStorage.setItem("cookiesAccepted", true);
+  document.getElementById("cookieConsent").style.display = "none";
+};
+</script>
+
+<!-- Tawk.to floating live chat -->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/68cd7587531e421921d0985a/1j5h966c8';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+
+</body>
+</html>
+
+
